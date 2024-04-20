@@ -17,17 +17,26 @@ app.get('/',(req,res)=>{
     res.send("Api is working");
 })
 // database connection
-mongoose.set('strictQuery',false)
-const connectDB=async()=>{
-    try{
-        await mongoose.connect(process.env.MONGO_URL,{
-        })
-        console.log('MongoDB database is connected');
-    }catch(err){
-        console.log(err);
-        console.log('MongoDB database is connection failed ');
-    }
-}
+// mongoose.set('strictQuery',false)
+// const connectDB=async()=>{
+//     try{
+//         await mongoose.connect(process.env.MONGO_URL,{
+//         })
+//         console.log('MongoDB database is connected');
+//     }catch(err){
+//         console.log(err);
+//         console.log('MongoDB database is connection failed ');
+//     }
+// }
+
+mongoose.connect(process.env.DB_URI);
+const db=mongoose.connection
+db.on('error',(err)=>{
+    console.log(err);
+})
+db.on('open',function(){
+    console.log('Database Connected...!');
+})
 
 // middleware
 app.use(express.json());
@@ -35,6 +44,5 @@ app.use(cookieParser())
 app.use(cors(corsOptions))
 
 app.listen(port,()=>{
-    connectDB()
     console.log("Server is running on port "+port);
 })

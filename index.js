@@ -4,6 +4,7 @@ import cors from 'cors';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import authRoute from './Routes/auth.js'
+import userRoute from './Routes/user.js'
 
 dotenv.config();
 
@@ -44,6 +45,7 @@ app.use(express.json());
 app.use(cookieParser())
 app.use(cors(corsOptions))
 app.use('/api/v1/auth',authRoute) // domain/api/v1/auth/register
+app.use('/api/v1/users',userRoute) // domain/api/v1/auth/register
 
 app.listen(port,()=>{
     console.log("Server is running on port "+port);

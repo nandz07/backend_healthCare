@@ -8,6 +8,7 @@ import userRoute from './Routes/user.js'
 import doctorRoute from './Routes/doctor.js'
 import reviewRoute from './Routes/review.js'
 import bookingRoute from './Routes/booking.js'
+import adminRoute from './Routes/admin.js'
 
 dotenv.config();
 
@@ -51,6 +52,7 @@ app.use('/api/v1/users',userRoute) // domain/api/v1/auth/register
 app.use('/api/v1/doctors',doctorRoute) // domain/api/v1/auth/register
 app.use('/api/v1/reviews',reviewRoute) // domain/api/v1/auth/register
 app.use('/api/v1/bookings',bookingRoute) 
+app.use('/api/v1/admin',adminRoute) 
 
 
 

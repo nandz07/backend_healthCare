@@ -1,6 +1,8 @@
 
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcryptjs'
+import Admin from '../models/AdminSchema.js'
+
 
 
 const generateToken = user => jwt.sign({ adminEmail: "admin@gmail.com" }, process.env.JWT_SECRET_key, {
@@ -8,18 +10,20 @@ const generateToken = user => jwt.sign({ adminEmail: "admin@gmail.com" }, proces
 })
 
 export const adminLogin = async (req, res) => {
-    const adminData = req.body
-    const adminEmail = "admin@gmail.com"
-    const adminPassword = "123123"
+    const {email} = req.body
     try {
-
-        if (adminData.email == adminEmail && adminData.password == adminPassword) {
-            // res.json({ status: true, admin: true, admin: token })
-            const adminToken = generateToken(adminEmail)
-            res.status(200).json({ status: true, message: "Successfully login", adminToken })
-        } else {
-            return res.status(400).json({ status: false, message: "invalid Email or Password" });
+        const admin =await Admin.findOne({ email })
+        if (!admin) {
+            return res.status(404).json({ message: "User not found" })
         }
+
+        const isPasswordMatch = await bcrypt.compare(req.body.password, admin.password)
+        if (!isPasswordMatch) {
+            return res.status(400).json({ status: false, message: "Invalid credentials" })
+        }
+            const adminToken = generateToken(admin)
+            res.status(200).json({ status: true, message: "Successfully login", adminToken })
+        
     } catch (err) {
         console.log(err);
         return res.status(500).json({ status: false, message: "Failed to login" })

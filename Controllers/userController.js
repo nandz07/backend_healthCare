@@ -32,13 +32,26 @@ export const getSingleUser = async (req, res) => {
 
     }
 }
-export const getAllUser = async (req, res) => {
-    const id = req.params.id
+export const getAllUsers = async (req, res) => {
     try {
-        const user = await User.find({}).select("-password")
-        res.status(200).json({ success: true, message: 'Users found', data: user })
+        const { query } = req.query
+        let users;
+        if (query) {
+            const escapedQuery = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            users = await User.find({
+                $or: [
+                    { name: { $regex: escapedQuery, $options: "i" } },
+                    { email: { $regex: escapedQuery, $options: "i" } },
+                    { bloodType: { $regex: escapedQuery, $options: "i" } }
+                ],
+            }).select("-password");
+        } else {
+            users = await User.find().select("-password")
+        }
+
+        res.status(200).json({ success: true, message: 'Patients details found', data: users })
     } catch (error) {
-        res.status(500).json({ success: false, message: 'No user found' })
+        res.status(500).json({ success: false, message: 'No patients  found' })
 
     }
 }
